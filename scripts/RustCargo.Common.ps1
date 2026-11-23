@@ -27,10 +27,9 @@ function Get-RustCargoManifest([string] $Toolchain, [string] $Repo, [string] $Ma
         if (Test-Path $local) { $ManifestPath = $local }
     }
     if (-not $ManifestPath) {
+        # Public repo: plain raw download, no token or API rate limit.
         $ManifestPath = Join-Path ([IO.Path]::GetTempPath()) "$Toolchain.json"
-        Invoke-RustCargoDownload "https://api.github.com/repos/$Repo/contents/toolchain/$Toolchain.json?ref=main" $ManifestPath
-        $j = Get-Content $ManifestPath -Raw | ConvertFrom-Json
-        [IO.File]::WriteAllBytes($ManifestPath, [Convert]::FromBase64String(($j.content -replace '\s', '')))
+        Invoke-RustCargoDownload "https://raw.githubusercontent.com/$Repo/main/toolchain/$Toolchain.json" $ManifestPath
     }
     Get-Content $ManifestPath -Raw | ConvertFrom-Json
 }
@@ -46,12 +45,8 @@ function Get-RustCargoHostTarget {
 function Get-RustCargoAsset($Repo, $Tag, $Asset, $WorkDir) {
     $out = Join-Path $WorkDir $Asset.name
     if (-not (Test-Path $out) -or (Get-FileHash $out -Algorithm SHA256).Hash -ne $Asset.sha256.ToUpper()) {
-        $rel = Join-Path $WorkDir "release-$Tag.json"
-        if (-not (Test-Path $rel)) { Invoke-RustCargoDownload "https://api.github.com/repos/$Repo/releases/tags/$Tag" $rel }
-        $a = (Get-Content $rel -Raw | ConvertFrom-Json).assets | Where-Object name -eq $Asset.name
-        if (-not $a) { throw "Release $Tag in $Repo has no asset $($Asset.name)" }
-        Write-Host "  downloading $($Asset.name) ($([math]::Round($a.size / 1MB)) MB)"
-        Invoke-RustCargoDownload $a.url $out -Binary
+        Write-Host "  downloading $($Asset.name) ($([math]::Round($Asset.size / 1MB)) MB)"
+        Invoke-RustCargoDownload "https://github.com/$Repo/releases/download/$Tag/$($Asset.name)" $out
     }
     $h = (Get-FileHash $out -Algorithm SHA256).Hash
     if ($h -ne $Asset.sha256.ToUpper()) { Remove-Item $out -Force; throw "SHA-256 mismatch for $($Asset.name): got $h, expected $($Asset.sha256)" }

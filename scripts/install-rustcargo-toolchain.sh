@@ -20,19 +20,17 @@ esac
 
 manifest="$here/../toolchain/$TOOLCHAIN.json"
 if [[ ! -f "$manifest" ]]; then
-  manifest="$(mktemp)"; api -H "Accept: application/vnd.github.raw" "https://api.github.com/repos/$REPO/contents/toolchain/$TOOLCHAIN.json?ref=main" -o "$manifest"
+  manifest="$(mktemp)"; api "https://raw.githubusercontent.com/$REPO/main/toolchain/$TOOLCHAIN.json" -o "$manifest"
 fi
 TAG="$(jq -r .releaseTag "$manifest")"; COMMIT="$(jq -r .rustcCommit "$manifest")"
 WORK="$ROOT/downloads/$TOOLCHAIN"; DEST="$ROOT/toolchains/$TOOLCHAIN-$HOST"; mkdir -p "$WORK"
-rel="$WORK/release.json"; api "https://api.github.com/repos/$REPO/releases/tags/$TAG" -o "$rel"
 
 fetch() { # $1=json path (host.X / std.X)
   local name want url out
   name="$(jq -r ".$1.name // empty" "$manifest")"; [[ -n "$name" ]] || { echo "no package for $1" >&2; exit 1; }
   want="$(jq -r ".$1.sha256" "$manifest")"; out="$WORK/$name"
   if [[ ! -f "$out" || "$(sha "$out")" != "$want" ]]; then
-    url="$(jq -r --arg n "$name" '.assets[] | select(.name==$n) | .url' "$rel")"
-    echo "  downloading $name"; api -H "Accept: application/octet-stream" "$url" -o "$out"
+    echo "  downloading $name"; api "https://github.com/$REPO/releases/download/$TAG/$name" -o "$out"
   fi
   [[ "$(sha "$out")" == "$want" ]] || { echo "SHA-256 mismatch for $name" >&2; rm -f "$out"; exit 1; }
   echo "$out"

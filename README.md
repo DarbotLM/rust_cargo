@@ -1,6 +1,6 @@
 # rust_cargo
 
-darbotlm's pinned Rust toolchain and crate mirror. It replaces the internal
+darbotlm's pinned Rust toolchain and crate mirror (site: https://darbotlm.github.io/rust_cargo/). It replaces the internal
 `ms-prod-<ver>` toolchains and the cargo registry on **Mxc-Azure-Feed** for
 darbotlm projects (MXC, bitscoop, scooper).
 
@@ -49,9 +49,9 @@ publishing.
 
 ## Auth
 
-The repo is private. Scripts read `RUST_CARGO_TOKEN`, `GH_TOKEN`,
-`GITHUB_TOKEN`, or `gh auth token`. Pipelines take the secret variable
-`RustCargoToken`.
+None. The repo is public: manifests come from raw.githubusercontent.com and
+assets from public release download URLs, all SHA-256 verified. Publishing
+still uses `gh` with write access.
 
 ## Mapping from Mxc-Azure-Feed
 

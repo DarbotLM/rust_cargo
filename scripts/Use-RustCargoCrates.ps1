@@ -28,15 +28,11 @@ $vendor = Join-Path $InstallRoot "vendor/$lockHash"
 New-Item -ItemType Directory -Force $work | Out-Null
 
 if (-not (Test-Path (Join-Path $vendor '.complete'))) {
-    $rel = Join-Path $work "release-$Tag.json"
-    Invoke-RustCargoDownload "https://api.github.com/repos/$Repo/releases/tags/$Tag" $rel
-    $assets = (Get-Content $rel -Raw | ConvertFrom-Json).assets
-    $a = $assets | Where-Object name -eq $name
-    $s = $assets | Where-Object name -eq "$name.sha256"
-    if (-not $a -or -not $s) { throw "No crate bundle for Cargo.lock $lockHash in $Repo@$Tag. Publish one with Publish-RustCargoCrates.ps1." }
     $pkg = Join-Path $work $name; $sum = "$pkg.sha256"
-    Invoke-RustCargoDownload $s.url $sum -Binary
-    Invoke-RustCargoDownload $a.url $pkg -Binary
+    $base = "https://github.com/$Repo/releases/download/$Tag"
+    try { Invoke-RustCargoDownload "$base/$name.sha256" $sum }
+    catch { throw "No crate bundle for Cargo.lock $lockHash in $Repo@$Tag. Publish one with Publish-RustCargoCrates.ps1." }
+    Invoke-RustCargoDownload "$base/$name" $pkg
     $want = ((Get-Content $sum -Raw).Trim() -split '\s+')[0].ToUpper()
     $got = (Get-FileHash $pkg -Algorithm SHA256).Hash
     if ($got -ne $want) { throw "SHA-256 mismatch for ${name}: got $got, expected $want" }

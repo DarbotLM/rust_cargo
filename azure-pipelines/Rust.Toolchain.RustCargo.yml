@@ -1,9 +1,8 @@
-# Installs a pinned darbot Rust toolchain from darbotlm/rust_cargo and selects
-# it via RUSTUP_TOOLCHAIN. Replaces the 1ES `templateContext.rust.rustToolchain`
-# block that pulled `ms-prod-1.93` from Mxc-Azure-Feed.
-#
-# Requires a pipeline secret variable `RustCargoToken` (GitHub token with read
-# access to darbotlm/rust_cargo) and rustup on the agent (hosted images have it).
+# Installs a pinned darbot Rust toolchain from the public darbotlm/rust_cargo
+# repo and selects it via RUSTUP_TOOLCHAIN. Replaces the 1ES
+# `templateContext.rust.rustToolchain` block that pulled `ms-prod-1.93` from
+# Mxc-Azure-Feed. No secrets are needed: every artifact is a public release
+# asset verified against the SHA-256 in toolchain/<name>.json.
 
 parameters:
 - name: toolchain
@@ -21,11 +20,9 @@ steps:
       $ErrorActionPreference = 'Stop'
       $dir = Join-Path '$(Agent.TempDirectory)' 'rust_cargo'
       Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
-      git -c "http.extraheader=AUTHORIZATION: bearer $env:RUST_CARGO_TOKEN" clone --depth 1 --branch '${{ parameters.rustCargoRef }}' https://github.com/darbotlm/rust_cargo.git $dir
+      git clone --depth 1 --branch '${{ parameters.rustCargoRef }}' https://github.com/darbotlm/rust_cargo.git $dir
       if ($LASTEXITCODE) { throw 'clone of darbotlm/rust_cargo failed' }
       if (-not (Get-Command rustup -ErrorAction SilentlyContinue)) { throw 'rustup is required on the agent' }
       & "$dir/scripts/Install-RustCargoToolchain.ps1" -Toolchain '${{ parameters.toolchain }}' -AdditionalTargets '${{ parameters.additionalTargets }}'
       Write-Host "##vso[task.setvariable variable=RustCargoDir]$dir"
     displayName: Install Rust ${{ parameters.toolchain }} (darbotlm/rust_cargo)
-    env:
-      RUST_CARGO_TOKEN: $(RustCargoToken)

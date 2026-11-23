@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rust_cargo</title>
+<meta name="description" content="Pinned, SHA-256 verified Rust toolchains and vendored crate mirrors for darbotlm projects.">
+<style>
+  :root { --bg:#fbfaf7; --fg:#1d1d1b; --muted:#5f5e58; --line:#e3e0d8; --code:#f1efe8; --accent:#b4441e; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161614; --fg:#ecebe6; --muted:#a3a198; --line:#2d2c28; --code:#22211e; --accent:#f08a5d; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:820px; margin:0 auto; padding:48px 16px 80px; }
+  h1 { font-size:2rem; margin:0 0 4px; letter-spacing:-0.02em; }
+  h2 { font-size:1.15rem; margin:40px 0 8px; }
+  p.lede { color:var(--muted); margin:0 0 24px; }
+  code, pre { font:13.5px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; background:var(--code); border-radius:6px; }
+  code { padding:1px 5px; }
+  pre { padding:14px 16px; overflow-x:auto; border:1px solid var(--line); }
+  pre code { padding:0; background:none; }
+  table { width:100%; border-collapse:collapse; font-size:14.5px; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  a { color:var(--accent); }
+  .wrap { overflow-x:auto; }
+</style>
+</head>
+<body>
+<main>
+  <h1>rust_cargo</h1>
+  <p class="lede">Pinned, SHA-256 verified Rust toolchains and vendored crate mirrors for darbotlm projects (MXC, bitscoop, scooper). Public, so builds and pipelines need no secrets.</p>
+
+  <h2>What's published</h2>
+  <div class="wrap"><table>
+    <tr><th>Artifact</th><th>Where</th></tr>
+    <tr><td>Rust toolchain <code>darbot-1.100.0</code> (rustc 1.100.0, 0ef1bc386)</td><td><a href="https://github.com/DarbotLM/rust_cargo/releases/tag/toolchain-1.100.0">toolchain-1.100.0</a>, manifest <a href="https://github.com/DarbotLM/rust_cargo/blob/main/toolchain/darbot-1.100.0.json">toolchain/darbot-1.100.0.json</a></td></tr>
+    <tr><td>Hosts</td><td>x86_64 / aarch64 Windows (msvc), x86_64 Linux, aarch64 / x86_64 macOS</td></tr>
+    <tr><td>Cross targets (rust-std)</td><td>+ aarch64-unknown-linux-gnu</td></tr>
+    <tr><td>Vendored crates.io sources</td><td><a href="https://github.com/DarbotLM/rust_cargo/releases/tag/crates">crates</a>, keyed by Cargo.lock hash, index <a href="https://github.com/DarbotLM/rust_cargo/blob/main/crates/index.json">crates/index.json</a></td></tr>
+  </table></div>
+  <p>Toolchain packages are byte-identical to the official <code>static.rust-lang.org</code> dist tarballs; each one's upstream URL and hash is in the manifest.</p>
+
+  <h2>Install the toolchain</h2>
+<pre><code>git clone --depth 1 https://github.com/DarbotLM/rust_cargo.git
+./rust_cargo/scripts/Install-RustCargoToolchain.ps1 -Toolchain darbot-1.100.0 -AdditionalTargets aarch64-pc-windows-msvc
+cargo +darbot-1.100.0 build --locked</code></pre>
+<pre><code>./rust_cargo/scripts/install-rustcargo-toolchain.sh darbot-1.100.0 aarch64-unknown-linux-gnu</code></pre>
+
+  <h2>Build offline from the crate mirror</h2>
+<pre><code>./rust_cargo/scripts/Use-RustCargoCrates.ps1 -LockFile src/Cargo.lock -ConfigFile .cargo/config.toml
+cargo build --locked --offline</code></pre>
+
+  <h2>Azure Pipelines</h2>
+<pre><code>steps:
+  - template: Rust.Toolchain.RustCargo.yml@self
+    parameters:
+      toolchain: 'darbot-1.100.0'
+  - template: Cargo.Setup.RustCargo.yml@self</code></pre>
+  <p>Templates are in <a href="https://github.com/DarbotLM/rust_cargo/tree/main/azure-pipelines">azure-pipelines/</a>. They replace the <code>ms-prod-*</code> toolchain and the cargo registry on Mxc-Azure-Feed.</p>
+</main>
+</body>
+</html>
