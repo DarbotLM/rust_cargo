@@ -64,7 +64,7 @@ $manifest | ConvertTo-Json -Depth 6 | Set-Content $mPath -Encoding utf8
 Write-Host "manifest -> $mPath ($verLine)"
 
 if (-not $SkipUpload) {
-    & gh release view $tag -R $Repo *> $null
+    cmd /c "gh release view $tag -R $Repo >nul 2>&1"
     if ($LASTEXITCODE) {
         & gh release create $tag -R $Repo --title "darbot-$Version (Rust $Version)" --notes "Verified mirror of the official Rust $Version dist packages. Install with scripts/Install-RustCargoToolchain.ps1 -Toolchain darbot-$Version. Replaces ms-prod-1.93 from Mxc-Azure-Feed."
     }

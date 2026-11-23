@@ -45,7 +45,7 @@ New-Item -ItemType Directory -Force (Split-Path $index) | Out-Null
 ConvertTo-Json @($entries) -Depth 4 | Set-Content $index -Encoding utf8
 
 if (-not $SkipUpload) {
-    & gh release view $Tag -R $Repo *> $null
+    cmd /c "gh release view $Tag -R $Repo >nul 2>&1"
     if ($LASTEXITCODE) {
         & gh release create $Tag -R $Repo --title 'Vendored crates' --notes 'crates.io mirror bundles keyed by Cargo.lock hash. Consume with scripts/Use-RustCargoCrates.ps1. Replaces the Mxc-Azure-Feed cargo registry.'
     }

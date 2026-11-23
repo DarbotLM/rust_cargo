@@ -1,0 +1,81 @@
+﻿{
+    "toolchain":  "darbot-1.100.0",
+    "rustVersion":  "1.100.0",
+    "rustcVersion":  "1.100.0 (0ef1bc386 2026-11-09)",
+    "rustcCommit":  "0ef1bc386",
+    "releaseTag":  "toolchain-1.100.0",
+    "replaces":  "ms-prod-1.93 (Mxc-Azure-Feed)",
+    "excludeComponents":  [
+                              "rust-docs*"
+                          ],
+    "host":  {
+                 "x86_64-pc-windows-msvc":  {
+                                                "name":  "rust-1.100.0-x86_64-pc-windows-msvc.tar.xz",
+                                                "sha256":  "8c9dabd0a03ebb9d9b8f64fc5298b22ce3c5de7c80e38a075fcc6d81a0e1e7ec",
+                                                "size":  206767064,
+                                                "upstream":  "https://static.rust-lang.org/dist/rust-1.100.0-x86_64-pc-windows-msvc.tar.xz"
+                                            },
+                 "aarch64-pc-windows-msvc":  {
+                                                 "name":  "rust-1.100.0-aarch64-pc-windows-msvc.tar.xz",
+                                                 "sha256":  "7b3cdff0f00579c4810502cd6c2670630ed59071d7ba641b775cb4572d67b002",
+                                                 "size":  172205104,
+                                                 "upstream":  "https://static.rust-lang.org/dist/rust-1.100.0-aarch64-pc-windows-msvc.tar.xz"
+                                             },
+                 "x86_64-unknown-linux-gnu":  {
+                                                  "name":  "rust-1.100.0-x86_64-unknown-linux-gnu.tar.xz",
+                                                  "sha256":  "98ee6bec240e1cfe944f17e7092412dc5ef6e008484bb668c6936d35a7d15acd",
+                                                  "size":  211225068,
+                                                  "upstream":  "https://static.rust-lang.org/dist/rust-1.100.0-x86_64-unknown-linux-gnu.tar.xz"
+                                              },
+                 "aarch64-apple-darwin":  {
+                                              "name":  "rust-1.100.0-aarch64-apple-darwin.tar.xz",
+                                              "sha256":  "68ba729fe20df0f74309ef55ffbe518fc982177f327651b06112ef11e8e1de0d",
+                                              "size":  156873584,
+                                              "upstream":  "https://static.rust-lang.org/dist/rust-1.100.0-aarch64-apple-darwin.tar.xz"
+                                          },
+                 "x86_64-apple-darwin":  {
+                                             "name":  "rust-1.100.0-x86_64-apple-darwin.tar.xz",
+                                             "sha256":  "7669d8521e663c012d3f44081b5419112f329cafd5cfbdd3b9c24c14ba9eadbb",
+                                             "size":  141679124,
+                                             "upstream":  "https://static.rust-lang.org/dist/rust-1.100.0-x86_64-apple-darwin.tar.xz"
+                                         }
+             },
+    "std":  {
+                "x86_64-pc-windows-msvc":  {
+                                               "name":  "rust-std-1.100.0-x86_64-pc-windows-msvc.tar.xz",
+                                               "sha256":  "24ad2f28791e08a573b9c7df5efa3ace884eecd1fa7e7f5b62c65f4b49bb4532",
+                                               "size":  23418404,
+                                               "upstream":  "https://static.rust-lang.org/dist/rust-std-1.100.0-x86_64-pc-windows-msvc.tar.xz"
+                                           },
+                "aarch64-pc-windows-msvc":  {
+                                                "name":  "rust-std-1.100.0-aarch64-pc-windows-msvc.tar.xz",
+                                                "sha256":  "685fe68603036a9726d42ddc287ea8d15a42b50e538018efdd1b4a39dd427fd6",
+                                                "size":  23555296,
+                                                "upstream":  "https://static.rust-lang.org/dist/rust-std-1.100.0-aarch64-pc-windows-msvc.tar.xz"
+                                            },
+                "x86_64-unknown-linux-gnu":  {
+                                                 "name":  "rust-std-1.100.0-x86_64-unknown-linux-gnu.tar.xz",
+                                                 "sha256":  "4591b6486594ded52ecd6135db95bf9355bbd3ca7a380888b141528bbcf9a5d4",
+                                                 "size":  31283108,
+                                                 "upstream":  "https://static.rust-lang.org/dist/rust-std-1.100.0-x86_64-unknown-linux-gnu.tar.xz"
+                                             },
+                "aarch64-unknown-linux-gnu":  {
+                                                  "name":  "rust-std-1.100.0-aarch64-unknown-linux-gnu.tar.xz",
+                                                  "sha256":  "c73f62fbe5d837f9807ed9e0076575dd8d3475c79af2b30e3570d328e6713f8f",
+                                                  "size":  31553000,
+                                                  "upstream":  "https://static.rust-lang.org/dist/rust-std-1.100.0-aarch64-unknown-linux-gnu.tar.xz"
+                                              },
+                "aarch64-apple-darwin":  {
+                                             "name":  "rust-std-1.100.0-aarch64-apple-darwin.tar.xz",
+                                             "sha256":  "9345645b6f56eea28bf8cc2c0f628a61d507a688f91c1bec5ae6bfad216a16c7",
+                                             "size":  30458808,
+                                             "upstream":  "https://static.rust-lang.org/dist/rust-std-1.100.0-aarch64-apple-darwin.tar.xz"
+                                         },
+                "x86_64-apple-darwin":  {
+                                            "name":  "rust-std-1.100.0-x86_64-apple-darwin.tar.xz",
+                                            "sha256":  "1cc179e8e58af18b6fcfc095065a75fb6ed9afb9e33dc7fd596551cf755efe9f",
+                                            "size":  30371808,
+                                            "upstream":  "https://static.rust-lang.org/dist/rust-std-1.100.0-x86_64-apple-darwin.tar.xz"
+                                        }
+            }
+}
