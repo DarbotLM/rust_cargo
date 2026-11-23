@@ -1,0 +1,4 @@
+# downloads / scratch
+/downloads/
+*.tar.xz
+*.tar.gz

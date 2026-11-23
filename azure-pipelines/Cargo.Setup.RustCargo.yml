@@ -1,0 +1,20 @@
+# Resolves crates.io dependencies from the darbotlm/rust_cargo vendored mirror
+# (keyed by Cargo.lock hash). Replaces Cargo.Setup.Private.yml +
+# CargoAuthenticate against Mxc-Azure-Feed. Run after
+# Rust.Toolchain.RustCargo.yml (which clones rust_cargo into $(RustCargoDir)).
+
+parameters:
+- name: lockFile
+  type: string
+  default: '$(Build.SourcesDirectory)/src/Cargo.lock'
+- name: configFile
+  type: string
+  default: '$(Build.SourcesDirectory)/.cargo/config.toml'
+
+steps:
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+      & '$(RustCargoDir)/scripts/Use-RustCargoCrates.ps1' -LockFile '${{ parameters.lockFile }}' -ConfigFile '${{ parameters.configFile }}'
+    displayName: Setup Cargo crate mirror (darbotlm/rust_cargo)
+    env:
+      RUST_CARGO_TOKEN: $(RustCargoToken)
