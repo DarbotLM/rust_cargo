@@ -1,7 +1,9 @@
 # Resolves crates.io dependencies from the darbotlm/rust_cargo vendored mirror
-# (keyed by Cargo.lock hash). Replaces Cargo.Setup.Private.yml +
-# CargoAuthenticate against Mxc-Azure-Feed. Run after
-# Rust.Toolchain.RustCargo.yml (which clones rust_cargo into $(RustCargoDir)).
+# (keyed by Cargo.lock hash). Replaces the `[source.crates-io] replace-with =
+# "Mxc-Azure-Feed"` cargo config. Reuses the rust_cargo checkout from
+# Rust.Toolchain.RustCargo.yml when that ran earlier in the job, else clones it.
+#
+# Requires the pipeline secret variable `RustCargoToken`.
 
 parameters:
 - name: lockFile
@@ -10,11 +12,22 @@ parameters:
 - name: configFile
   type: string
   default: '$(Build.SourcesDirectory)/.cargo/config.toml'
+- name: rustCargoRef
+  type: string
+  default: 'main'
 
 steps:
   - pwsh: |
       $ErrorActionPreference = 'Stop'
-      & '$(RustCargoDir)/scripts/Use-RustCargoCrates.ps1' -LockFile '${{ parameters.lockFile }}' -ConfigFile '${{ parameters.configFile }}'
+      $dir = $env:RUSTCARGODIR
+      if (-not $dir -or -not (Test-Path "$dir/scripts/Use-RustCargoCrates.ps1")) {
+        $dir = Join-Path '$(Agent.TempDirectory)' 'rust_cargo'
+        Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
+        git -c "http.extraheader=AUTHORIZATION: bearer $env:RUST_CARGO_TOKEN" clone --depth 1 --branch '${{ parameters.rustCargoRef }}' https://github.com/darbotlm/rust_cargo.git $dir
+        if ($LASTEXITCODE) { throw 'clone of darbotlm/rust_cargo failed' }
+        Write-Host "##vso[task.setvariable variable=RustCargoDir]$dir"
+      }
+      & "$dir/scripts/Use-RustCargoCrates.ps1" -LockFile '${{ parameters.lockFile }}' -ConfigFile '${{ parameters.configFile }}'
     displayName: Setup Cargo crate mirror (darbotlm/rust_cargo)
     env:
       RUST_CARGO_TOKEN: $(RustCargoToken)
