@@ -1,0 +1,10 @@
+﻿[
+    {
+        "lockHash":  "f16e424ff1e57abe",
+        "asset":  "crates-f16e424ff1e57abe.tar.gz",
+        "sha256":  "80018b2ff247c46abbc9ef104783d1449f014453e9cd1770671a5a6ed6c75655",
+        "crates":  326,
+        "workspace":  "src",
+        "created":  "2026-11-23T00:24:33Z"
+    }
+]

@@ -23,9 +23,12 @@ Remove-Item $vendor -Recurse -Force -ErrorAction SilentlyContinue
 
 Push-Location $WorkspaceDir
 try {
-    $tc = if ($Toolchain) { @("+$Toolchain") } else { @() }
-    & cargo @tc vendor --locked --versioned-dirs $vendor | Out-Null
-    if ($LASTEXITCODE) { throw "cargo vendor failed ($LASTEXITCODE)" }
+    # cmd /c: cargo writes progress to stderr, which Windows PowerShell 5.1
+    # turns into terminating errors under ErrorActionPreference=Stop.
+    $tc = if ($Toolchain) { "+$Toolchain " } else { '' }
+    $log = Join-Path $WorkDir 'vendor.log'
+    cmd /c "cargo ${tc}vendor --locked --versioned-dirs `"$vendor`" > `"$log`" 2>&1"
+    if ($LASTEXITCODE) { Get-Content $log -Tail 20 | Write-Host; throw "cargo vendor failed ($LASTEXITCODE)" }
 } finally { Pop-Location }
 
 & tar -czf $pkg -C $vendor .
